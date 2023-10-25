@@ -45,8 +45,10 @@ if (!isset($_SESSION['usuario_logueado']))
             </div>
             <div class="mb-3">
                 <label for="usuario" class="form-label">Usuario</label>
-                <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Ingrese su usuario"
+                <input type="text" class="form-control" id="usuario" name="usuario" onkeyup="comprobar_usuario(this.value)" placeholder="Ingrese su usuario"
                     required>
+                    <span id="mensaje"></span>
+
 
             </div>
             <div class="mb-3">
@@ -65,6 +67,40 @@ if (!isset($_SESSION['usuario_logueado']))
         </form>
     </div>
     
+    <script>
+                
+
+                function comprobar_usuario(str) {
+
+                    if (str.length == 0) {
+                        document.getElementById("mensaje").innerHTML = "";
+
+                        return;
+                    } else {
+                        var xmlhttp = new XMLHttpRequest();
+                        xmlhttp.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {
+
+                                if(this.responseText==1)
+                                {
+                                    document.getElementById("enviar").disabled = true;
+                                    document.getElementById("mensaje").innerHTML = "<p style='color:red'>Usuario No Disponible</p>";
+                                }
+                                else
+                                {
+                                    document.getElementById("enviar").disabled = false;
+                                document.getElementById("mensaje").innerHTML = "";
+                                }
+                            }
+                        };
+
+
+
+                        xmlhttp.open("GET", "ajax_comprobar_usuario.php?usuario=" + str, true);
+                        xmlhttp.send();
+                    }
+                }
+            </script>
 </body>
 
 </html>
